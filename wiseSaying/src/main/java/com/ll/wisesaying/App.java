@@ -25,10 +25,10 @@ public class App {
             if (cmd.equals(Command.QUIT)) break;
             // 등록
             else if (cmd.equals(Command.REGISTER)) {
-                System.out.print(Message.REGISTER_CONTENT);
+                System.out.print(Message.INPUT_CONTENT);
                 String content = br.readLine().trim();
 
-                System.out.print(Message.REGISTER_AUTHOR);
+                System.out.print(Message.INPUT_AUTHOR);
                 String author = br.readLine().trim();
 
                 WiseSaying wiseSaying = new WiseSaying(content, author);
@@ -53,16 +53,37 @@ public class App {
                 boolean deleted = repository.deleteById(id);
 
                 if (deleted) {
-                    System.out.printf(Message.DELETE_SUCCESS + "\n", id);
+                    System.out.printf(Message.DELETE_SUCCESS, id);
                 } else {
-                    System.out.printf(Message.DELETE_NOT_FOUND + "\n", id);
+                    System.out.printf(Message.DELETE_NOT_FOUND, id);
                 }
+            }
+            // 수정
+            else if (cmd.startsWith(Command.MODIFY)) {
+                long id = extractIdFromCommand(cmd);
+                WiseSaying target = repository.findById(id);
+
+                if (target == null) {
+                    System.out.printf(Message.MODIFY_NOT_FOUND, id);
+                    return;
+                }
+
+                System.out.printf(Message.BEFORE_CONTENT, target.getContent());
+                System.out.print(Message.INPUT_CONTENT);
+                String newContent = br.readLine().trim();
+
+                System.out.printf(Message.BEFORE_AUTHOR, target.getAuthor());
+                System.out.print(Message.INPUT_AUTHOR);
+                String newAuthor = br.readLine().trim();
+
+                WiseSaying updated = new WiseSaying(id, newContent, newAuthor);
+                repository.update(updated);
             }
 
         }
     }
 
-    // 쿼리 파라미터 추출
+    // 명령 내 쿼리 파라미터에서 id 추출
     private long extractIdFromCommand(String cmd) {
         // 예: "삭제?id=1"
         String[] parts = cmd.split("\\?");

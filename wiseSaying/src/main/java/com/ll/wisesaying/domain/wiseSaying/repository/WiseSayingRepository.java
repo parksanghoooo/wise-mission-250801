@@ -69,5 +69,46 @@ public class WiseSayingRepository {
         }
     }
 
+    public WiseSaying findById(long id) {
+        String sql = "SELECT id, content, author FROM wiseSayings WHERE id = ?";
+
+        try (
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setLong(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new WiseSaying(
+                        rs.getLong("id"),
+                        rs.getString("content"),
+                        rs.getString("author")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public boolean update(WiseSaying wiseSaying) {
+        String sql = "UPDATE wiseSayings SET content = ?, author = ? WHERE id = ?";
+
+        try (
+                Connection conn = DBUtil.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setString(1, wiseSaying.getContent());
+            pstmt.setString(2, wiseSaying.getAuthor());
+            pstmt.setLong(3, wiseSaying.getId());
+
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
