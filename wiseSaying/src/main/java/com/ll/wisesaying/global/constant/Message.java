@@ -13,6 +13,7 @@ public class Message {
 
     // 목록 관련
     public static final String LIST_HEADER = "번호 / 작가 / 명언\n----------------------";
+    public static final String LIST_FOOTER = "----------------------\n페이지 : %s\n";
     public static final String LIST_ROW_FORMAT = "%d / %s / %s\n";
 
     // 삭제 관련
