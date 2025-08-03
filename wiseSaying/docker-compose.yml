@@ -2,16 +2,12 @@ services:
 
   mysql:
     image: mysql:8.3.0
-    container_name: mysql
+    container_name: wiseSaying-mysql
     ports:
-      - "3308:3306"
+      - "3310:3306"
     environment:
+      MYSQL_DATABASE: wiseSaying
       MYSQL_ROOT_PASSWORD: 1234
       TZ: Asia/Seoul
-      MYSQL_DATABASE: wiseSaying
-    networks:
-      - local-bridge
-
-networks:
-  local-bridge:
-    driver: bridge
+    volumes:
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
