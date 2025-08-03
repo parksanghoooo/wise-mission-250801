@@ -12,9 +12,13 @@ import java.io.InputStreamReader;
 
 public class App {
 
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    WiseSayingService service = new WiseSayingService();
-    WiseSayingController controller = new WiseSayingController(service);
+    private final BufferedReader br;
+    private final WiseSayingController controller;
+
+    public App(BufferedReader br) {
+        this.br = br;
+        this.controller = new WiseSayingController(new WiseSayingService());
+    }
 
     public void run() throws IOException {
         System.out.println(Message.APP_TITLE);
