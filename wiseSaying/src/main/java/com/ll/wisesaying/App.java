@@ -8,7 +8,6 @@ import com.ll.wisesaying.global.constant.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class App {
 
@@ -39,17 +38,18 @@ public class App {
                 controller.create(content, author);
             }
             // 목록
-            else if (cmd.equals(Command.LIST)) {
-                controller.getAll();
+            else if (cmd.startsWith(Command.LIST)) {
+                int pageNumber = extractPageNumber(cmd);
+                controller.getAll(pageNumber);
             }
             // 삭제
             else if (cmd.startsWith(Command.DELETE)) {
-                long id = extractIdFromCommand(cmd);
+                long id = extractId(cmd);
                 controller.delete(id);
             }
             // 수정
             else if (cmd.startsWith(Command.MODIFY)) {
-                long id = extractIdFromCommand(cmd);
+                long id = extractId(cmd);
                 WiseSaying target = controller.get(id);
 
                 if (target == null) {
@@ -71,8 +71,8 @@ public class App {
         }
     }
 
-    // 명령 내 쿼리 파라미터에서 id 추출 ("삭제?id=1", "수정?id=2")
-    private long extractIdFromCommand(String cmd) {
+    // 쿼리 파라미터의 id 추출 ("삭제?id=1", "수정?id=2")
+    private long extractId(String cmd) {
         String[] parts = cmd.split("\\?");
         if (parts.length < 2) return -1;
 
@@ -83,6 +83,21 @@ public class App {
             return Long.parseLong(keyValue[1]);
         } catch (NumberFormatException e) {
             return -1;
+        }
+    }
+
+    // 쿼리 파라미터의 page number 추출
+    private int extractPageNumber(String cmd) {
+        String[] parts = cmd.split("\\?");
+        if (parts.length < 2) return 1;
+
+        String[] keyValue = parts[1].split("=");
+        if (keyValue.length < 2 || !keyValue[0].equals("page")) return 1;
+
+        try {
+            return Integer.parseInt(keyValue[1]);
+        } catch (NumberFormatException e) {
+            return 1;
         }
     }
 

@@ -31,27 +31,43 @@ public class WiseSayingRepository {
         return -1;
     }
 
-    public List<WiseSaying> findAllDesc() {
-        String sql = "SELECT id, content, author FROM wiseSayings ORDER BY id DESC";
-        List<WiseSaying> list = new ArrayList<>();
+    public List<WiseSaying> findAllDesc(int offset, int limit) {
+        String sql = "SELECT * FROM wiseSayings ORDER BY id DESC LIMIT ? OFFSET ?";
+        List<WiseSaying> result = new ArrayList<>();
 
-        try (
-                Connection conn = DBUtil.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-                ResultSet rs = pstmt.executeQuery();
-        ) {
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                String content = rs.getString("content");
-                String author = rs.getString("author");
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-                list.add(new WiseSaying(id, content, author));
+            pstmt.setInt(1, limit);
+            pstmt.setInt(2, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    long id = rs.getLong("id");
+                    String content = rs.getString("content");
+                    String author = rs.getString("author");
+                    result.add(new WiseSaying(id, content, author));
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return list;
+        return result;
+    }
+
+    public int count() {
+        String sql = "SELECT COUNT(*) FROM wiseSayings";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
     }
 
     public boolean deleteById(long id) {

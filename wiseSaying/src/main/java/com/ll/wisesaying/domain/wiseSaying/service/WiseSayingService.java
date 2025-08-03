@@ -18,8 +18,13 @@ public class WiseSayingService {
         return repository.findById(id);
     }
 
-    public List<WiseSaying> findAll() {
-        return repository.findAllDesc();
+    public List<WiseSaying> findAll(int pageNumber, int size) {
+        int offset = (pageNumber - 1) * size;
+        return repository.findAllDesc(offset, size);
+    }
+
+    public int getTotalCount() {
+        return repository.count();
     }
 
     public boolean delete(long id) {

@@ -24,12 +24,17 @@ public class WiseSayingController {
         return service.find(id);
     }
 
-    public void getAll() {
-        List<WiseSaying> list = service.findAll();
+    public void getAll(int pageNumber) {
+        int pageSize = 5;
+        List<WiseSaying> paged = service.findAll(pageNumber, pageSize);
+        int totalCount = service.getTotalCount();
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+
         System.out.println(Message.LIST_HEADER);
-        for (WiseSaying ws : list) {
+        for (WiseSaying ws : paged) {
             System.out.printf(Message.LIST_ROW_FORMAT, ws.getId(), ws.getAuthor(), ws.getContent());
         }
+        printPageIndicator(pageNumber, totalPage);
     }
 
     public void delete(long id) {
@@ -45,6 +50,16 @@ public class WiseSayingController {
     public void update(long id, String newContent, String newAuthor) {
         WiseSaying updated = new WiseSaying(id, newContent, newAuthor);
         service.update(updated);
+    }
+
+    private void printPageIndicator(int current, int total) {
+        StringBuilder sb = new StringBuilder();
+        for (int idx = 1; idx <= total; idx++) {
+            if (idx == current) sb.append("[").append(idx).append("]");
+            else sb.append(idx);
+            if (idx < total) sb.append(" / ");
+        }
+        System.out.printf(Message.LIST_FOOTER , sb);
     }
 
 }
