@@ -92,7 +92,7 @@ public class WiseSayingRepository {
         return null;
     }
 
-    public boolean update(WiseSaying wiseSaying) {
+    public void update(WiseSaying wiseSaying) {
         String sql = "UPDATE wiseSayings SET content = ?, author = ? WHERE id = ?";
 
         try (
@@ -103,8 +103,19 @@ public class WiseSayingRepository {
             pstmt.setString(2, wiseSaying.getAuthor());
             pstmt.setLong(3, wiseSaying.getId());
 
-            int result = pstmt.executeUpdate();
-            return result > 0;
+//            int result = pstmt.executeUpdate();
+//            return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteAll() {
+        try (Connection conn = DBUtil.getConnection()) {
+            String sql = "TRUNCATE TABLE wiseSayings";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
