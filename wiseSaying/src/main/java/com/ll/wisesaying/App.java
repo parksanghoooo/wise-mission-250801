@@ -8,6 +8,7 @@ import com.ll.wisesaying.global.constant.Message;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class App {
 
@@ -17,17 +18,17 @@ public class App {
     public void run() throws IOException {
         System.out.println(Message.APP_TITLE);
         while (true) {
-            System.out.println(Message.INPUT_PROMPT);
+            System.out.print(Message.INPUT_PROMPT);
             String cmd = br.readLine().trim();
 
             // 종료
             if (cmd.equals(Command.QUIT)) break;
             // 등록
             else if (cmd.equals(Command.REGISTER)) {
-                System.out.println(Message.REGISTER_CONTENT);
+                System.out.print(Message.REGISTER_CONTENT);
                 String content = br.readLine().trim();
 
-                System.out.println(Message.REGISTER_AUTHOR);
+                System.out.print(Message.REGISTER_AUTHOR);
                 String author = br.readLine().trim();
 
                 WiseSaying wiseSaying = new WiseSaying(content, author);
@@ -36,7 +37,45 @@ public class App {
                 System.out.printf(Message.REGISTER_SUCCESS, id);
 
             }
+            // 목록
+            else if (cmd.equals(Command.LIST)) {
+                List<WiseSaying> sayings = repository.findAllDesc();
+
+                System.out.println(Message.LIST_HEADER);
+
+                for (WiseSaying ws : sayings) {
+                    System.out.printf(Message.LIST_ROW_FORMAT, ws.getId(), ws.getAuthor(), ws.getContent());
+                }
+            }
+            // 삭제
+            else if (cmd.startsWith(Command.DELETE)) {
+                long id = extractIdFromCommand(cmd);
+                boolean deleted = repository.deleteById(id);
+
+                if (deleted) {
+                    System.out.printf(Message.DELETE_SUCCESS + "\n", id);
+                } else {
+                    System.out.printf(Message.DELETE_NOT_FOUND + "\n", id);
+                }
+            }
 
         }
     }
+
+    // 쿼리 파라미터 추출
+    private long extractIdFromCommand(String cmd) {
+        // 예: "삭제?id=1"
+        String[] parts = cmd.split("\\?");
+        if (parts.length < 2) return -1;
+
+        String[] keyValue = parts[1].split("=");
+        if (keyValue.length < 2 || !keyValue[0].equals("id")) return -1;
+
+        try {
+            return Long.parseLong(keyValue[1]);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
 }
