@@ -17,8 +17,14 @@ dependencies {
      */
     implementation("com.mysql:mysql-connector-j:8.3.0")
 
+    /**
+     * Test 의존성
+     * - JUnit 5
+     * - AssertJ
+     */
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.21.0")
 }
 
 tasks.test {
