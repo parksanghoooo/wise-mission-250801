@@ -4,6 +4,7 @@ import com.ll.wisesaying.domain.wiseSaying.model.entity.WiseSaying;
 import com.ll.wisesaying.domain.wiseSaying.repository.WiseSayingRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class WiseSayingService {
 
@@ -13,12 +14,20 @@ public class WiseSayingService {
         return repository.save(content, author);
     }
 
+    public Optional<WiseSaying> findById(long id) {
+        return repository.findById(id);
+    }
+
     public List<WiseSaying> findAll() {
         return repository.findAllDesc();
     }
 
-    public boolean delete(long id) {
-        return repository.deleteById(id);
+    public void delete(WiseSaying wiseSaying) {
+        repository.delete(wiseSaying);
+    }
+
+    public void update(WiseSaying wiseSaying, String newContent, String newAuthor) {
+        repository.update(wiseSaying, newContent, newAuthor);
     }
 
 }

@@ -33,14 +33,13 @@ public class WiseSayingRepository {
         return Optional.empty();
     }
 
-    public boolean deleteById(long id) {
-        Optional<WiseSaying> optional = findById(id);
-        if (optional.isPresent()) {
-            wiseSayings.remove(optional.get());
-            return true;
-        }
+    public void delete(WiseSaying wiseSaying) {
+        wiseSayings.remove(wiseSaying);
+    }
 
-        return false;
+    public void update(WiseSaying wiseSaying, String newContent, String newAuthor) {
+        wiseSaying.setContent(newContent);
+        wiseSaying.setAuthor(newAuthor);
     }
 
 }

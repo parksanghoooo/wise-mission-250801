@@ -5,6 +5,7 @@ import com.ll.wisesaying.domain.wiseSaying.service.WiseSayingService;
 import com.ll.wisesaying.global.constant.Message;
 
 import java.util.List;
+import java.util.Optional;
 
 public class WiseSayingController {
 
@@ -13,6 +14,10 @@ public class WiseSayingController {
     public void create(String content, String author) {
         WiseSaying response = service.create(content, author);
         System.out.printf(Message.REGISTER_SUCCESS, response.getId());
+    }
+
+    public Optional<WiseSaying> getWiseSaying(long id) {
+        return service.findById(id);
     }
 
     public void getAllWiseSayings() {
@@ -24,13 +29,12 @@ public class WiseSayingController {
         }
     }
 
-    public void delete(long id) {
-        boolean result = service.delete(id);
+    public void delete(WiseSaying wiseSaying) {
+        service.delete(wiseSaying);
+    }
 
-        if (result)
-            System.out.printf(Message.DELETE_SUCCESS, id);
-        else
-            System.out.printf(Message.NOT_EXIST_WISE_SAYING, id);
+    public void update(WiseSaying ws, String newContent, String newAuthor) {
+        service.update(ws, newContent, newAuthor);
     }
 
 }
