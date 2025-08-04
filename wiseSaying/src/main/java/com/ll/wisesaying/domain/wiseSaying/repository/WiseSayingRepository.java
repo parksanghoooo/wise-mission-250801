@@ -18,9 +18,13 @@ public class WiseSayingRepository {
         ) {
             pstmt.setString(1, wiseSaying.getContent());
             pstmt.setString(2, wiseSaying.getAuthor());
-            pstmt.executeUpdate();
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Insert failed, no rows affected.");
+            }
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getLong(1); // 생성된 ID
                 }
