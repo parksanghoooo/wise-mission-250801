@@ -20,9 +20,10 @@ public class WiseSayingRepository {
             pstmt.setString(2, wiseSaying.getAuthor());
             pstmt.executeUpdate();
 
-            ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getLong(1); // 생성된 ID
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong(1); // 생성된 ID
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -36,8 +37,8 @@ public class WiseSayingRepository {
         List<WiseSaying> result = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
             pstmt.setInt(1, limit);
             pstmt.setInt(2, offset);
 
@@ -60,8 +61,8 @@ public class WiseSayingRepository {
         String sql = "SELECT COUNT(*) FROM wiseSayings";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-
+             ResultSet rs = pstmt.executeQuery()
+        ) {
             if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -93,13 +94,16 @@ public class WiseSayingRepository {
                 PreparedStatement pstmt = conn.prepareStatement(sql)
         ) {
             pstmt.setLong(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new WiseSaying(
-                        rs.getLong("id"),
-                        rs.getString("content"),
-                        rs.getString("author")
-                );
+
+            // 바인딩 후 try-with-resources
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new WiseSaying(
+                            rs.getLong("id"),
+                            rs.getString("content"),
+                            rs.getString("author")
+                    );
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -119,7 +123,7 @@ public class WiseSayingRepository {
             pstmt.setString(2, wiseSaying.getAuthor());
             pstmt.setLong(3, wiseSaying.getId());
 
-//            int result = pstmt.executeUpdate();
+            int result = pstmt.executeUpdate();
 //            return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -127,11 +131,12 @@ public class WiseSayingRepository {
     }
 
     public void deleteAll() {
-        try (Connection conn = DBUtil.getConnection()) {
-            String sql = "TRUNCATE TABLE wiseSayings";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.executeUpdate();
-            }
+        String sql = "TRUNCATE TABLE wiseSayings";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
