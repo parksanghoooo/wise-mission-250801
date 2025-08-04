@@ -34,7 +34,7 @@ public class WiseSayingController {
         for (WiseSaying ws : paged) {
             System.out.printf(Message.LIST_ROW_FORMAT, ws.getId(), ws.getAuthor(), ws.getContent());
         }
-        printPageIndicator(pageNumber, totalPage);
+        markCurrentPage(pageNumber, totalPage);
     }
 
     public void delete(long id) {
@@ -52,7 +52,7 @@ public class WiseSayingController {
         service.update(updated);
     }
 
-    private void printPageIndicator(int current, int total) {
+    private void markCurrentPage(int current, int total) {
         StringBuilder sb = new StringBuilder();
         for (int idx = 1; idx <= total; idx++) {
             if (idx == current) sb.append("[").append(idx).append("]");
