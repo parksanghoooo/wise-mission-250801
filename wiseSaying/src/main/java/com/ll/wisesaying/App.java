@@ -1,7 +1,7 @@
-package com.ll.wiseSaying;
+package com.ll.wisesaying;
 
-import com.ll.wiseSaying.global.constant.Command;
-import com.ll.wiseSaying.global.constant.Message;
+import com.ll.wisesaying.global.constant.Command;
+import com.ll.wisesaying.global.constant.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.ll.wiseSaying.global.constant;
+package com.ll.wisesaying.global.constant;
 
 public class Command {
 
