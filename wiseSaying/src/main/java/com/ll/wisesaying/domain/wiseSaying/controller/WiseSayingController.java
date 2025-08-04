@@ -9,6 +9,9 @@ import java.util.List;
 
 public class WiseSayingController {
 
+    // 페이지 크기 상수
+    private static final int PAGE_SIZE = 5;
+
     private final WiseSayingService service;
 
     public WiseSayingController(WiseSayingService service) {
@@ -25,10 +28,9 @@ public class WiseSayingController {
     }
 
     public void getAll(int pageNumber) {
-        int pageSize = 5;
-        List<WiseSaying> paged = service.findAll(pageNumber, pageSize);
+        List<WiseSaying> paged = service.findAll(pageNumber, PAGE_SIZE);
         int totalCount = service.getTotalCount();
-        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int totalPage = (int) Math.ceil((double) totalCount / PAGE_SIZE);
 
         System.out.println(Message.LIST_HEADER);
         for (WiseSaying ws : paged) {
