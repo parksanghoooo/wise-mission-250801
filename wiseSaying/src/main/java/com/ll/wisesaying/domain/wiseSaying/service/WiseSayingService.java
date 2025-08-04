@@ -17,4 +17,8 @@ public class WiseSayingService {
         return repository.findAllDesc();
     }
 
+    public boolean delete(long id) {
+        return repository.deleteById(id);
+    }
+
 }

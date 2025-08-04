@@ -24,4 +24,13 @@ public class WiseSayingController {
         }
     }
 
+    public void delete(long id) {
+        boolean result = service.delete(id);
+
+        if (result)
+            System.out.printf(Message.DELETE_SUCCESS, id);
+        else
+            System.out.printf(Message.NOT_EXIST_WISE_SAYING, id);
+    }
+
 }

@@ -23,4 +23,15 @@ public class WiseSayingRepository {
         return descWiseSayings;
     }
 
+    public boolean deleteById(long id) {
+        for (int idx = 0; idx < wiseSayings.size(); idx++) {
+            if (wiseSayings.get(idx).getId() == id) {
+                wiseSayings.remove(idx);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
