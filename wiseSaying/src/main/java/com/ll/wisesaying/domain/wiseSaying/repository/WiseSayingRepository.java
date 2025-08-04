@@ -4,6 +4,7 @@ import com.ll.wisesaying.domain.wiseSaying.model.entity.WiseSaying;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WiseSayingRepository {
 
@@ -23,12 +24,20 @@ public class WiseSayingRepository {
         return descWiseSayings;
     }
 
-    public boolean deleteById(long id) {
-        for (int idx = 0; idx < wiseSayings.size(); idx++) {
-            if (wiseSayings.get(idx).getId() == id) {
-                wiseSayings.remove(idx);
-                return true;
+    public Optional<WiseSaying> findById(long id) {
+        for (WiseSaying wiseSaying : wiseSayings) {
+            if (wiseSaying.getId() == id) {
+                return Optional.of(wiseSaying);
             }
+        }
+        return Optional.empty();
+    }
+
+    public boolean deleteById(long id) {
+        Optional<WiseSaying> optional = findById(id);
+        if (optional.isPresent()) {
+            wiseSayings.remove(optional.get());
+            return true;
         }
 
         return false;
